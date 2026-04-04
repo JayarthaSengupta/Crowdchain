@@ -274,7 +274,35 @@ async function createCampaign() {
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  SECTION 6 — CAMPAIGN LISTING
+//  SECTION 5b — EDIT CAMPAIGN
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function saveEditCampaign(campaignId) {
+  requireWallet();
+
+  const title       = document.getElementById(`edit-title-${campaignId}`).value.trim();
+  const description = document.getElementById(`edit-desc-${campaignId}`).value.trim();
+
+  if (!title) { showStatus("Title cannot be empty.", "error"); return; }
+
+  try {
+    showStatus("Saving changes...", "info");
+    const tx = await contract.editCampaign(campaignId, title, description);
+    await tx.wait();
+    showStatus("✅ Campaign updated!", "success");
+    await loadAllCampaigns(); // refresh the grid
+  } catch (err) {
+    showStatus("Edit failed: " + (err.reason || err.message), "error");
+  }
+}
+
+function toggleEditForm(campaignId) {
+  const form = document.getElementById(`edit-form-${campaignId}`);
+  form.style.display = form.style.display === "none" ? "block" : "none";
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function loadAllCampaigns() {
@@ -359,6 +387,31 @@ async function buildCampaignCard(c, id) {
       <span>⏱ ${timeLeft}</span>
     </div>
     <p class="creator-addr">Creator: ${c[1].slice(0,6)}…${c[1].slice(-4)}</p>
+
+    <!-- Edit form (creator only, not withdrawn) -->
+    ${isCreator && !withdrawn ? `
+      <button class="btn btn-outline btn-sm mt-8" onclick="toggleEditForm(${id})" style="width:100%;">
+        ✏️ Edit Campaign
+      </button>
+      <div id="edit-form-${id}" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="edit-title-${id}" value="${escHtml(c[2])}" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="edit-desc-${id}">${escHtml(c[3])}</textarea>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary btn-sm" onclick="saveEditCampaign(${id})" style="flex:1;">
+            Save Changes
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="toggleEditForm(${id})">
+            Cancel
+          </button>
+        </div>
+      </div>` : ""
+    }
 
     <!-- Contribute -->
     ${!isExpired ? `

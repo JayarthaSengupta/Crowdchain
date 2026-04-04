@@ -14,6 +14,7 @@ const CONTRACT_ABI = [
   "event Voted(address indexed voter, address indexed creator, bool upvote)",
   "event CreatorVerified(address indexed creator)",
   "event CampaignCreated(uint indexed campaignId, address indexed creator, string title)",
+  "event CampaignEdited(uint indexed campaignId, string newTitle, string newDescription)",
   "event Contributed(uint indexed campaignId, address indexed contributor, uint amount)",
   "event FundsWithdrawn(uint indexed campaignId, address indexed creator, uint amount)",
   "event Refunded(uint indexed campaignId, address indexed contributor, uint amount)",
@@ -32,6 +33,7 @@ const CONTRACT_ABI = [
   "function applyForVerification(string ipfsDocHash)",
   "function voteOnCreator(address creator, bool upvote)",
   "function createCampaign(string title, string description, uint goal, uint deadline) returns (uint)",
+  "function editCampaign(uint campaignId, string title, string description)",
   "function contribute(uint campaignId) payable",
   "function withdrawFunds(uint campaignId)",
   "function refund(uint campaignId)"

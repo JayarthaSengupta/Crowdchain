@@ -68,6 +68,7 @@ contract Crowdfunding {
     event Voted(address indexed voter, address indexed creator, bool upvote);
     event CreatorVerified(address indexed creator);
     event CampaignCreated(uint indexed campaignId, address indexed creator, string title);
+    event CampaignEdited(uint indexed campaignId, string newTitle, string newDescription);
     event Contributed(uint indexed campaignId, address indexed contributor, uint amount);
     event FundsWithdrawn(uint indexed campaignId, address indexed creator, uint amount);
     event Refunded(uint indexed campaignId, address indexed contributor, uint amount);
@@ -262,7 +263,36 @@ contract Crowdfunding {
 
 
     // ─────────────────────────────────────────────
-    //  7. DATA FETCHING — VIEW FUNCTIONS
+    //  7. EDIT CAMPAIGN
+    // ─────────────────────────────────────────────
+
+    /**
+     * @notice Creator can update title and description of their campaign.
+     *         Goal and deadline are intentionally locked — changing them
+     *         after contributors have sent ETH would be unfair.
+     * @param _campaignId  The campaign to edit.
+     * @param _title       New title (must not be empty).
+     * @param _description New description.
+     */
+    function editCampaign(
+        uint            _campaignId,
+        string calldata _title,
+        string calldata _description
+    ) external campaignExists(_campaignId) {
+        Campaign storage c = campaigns[_campaignId];
+
+        require(msg.sender == c.creator, "Only the creator can edit this campaign");
+        require(!c.withdrawn,            "Campaign already closed");
+        require(bytes(_title).length > 0, "Title cannot be empty");
+
+        c.title       = _title;
+        c.description = _description;
+
+        emit CampaignEdited(_campaignId, _title, _description);
+    }
+
+    // ─────────────────────────────────────────────
+    //  8. DATA FETCHING — VIEW FUNCTIONS
     // ─────────────────────────────────────────────
 
     /// @notice Returns total campaign count.
