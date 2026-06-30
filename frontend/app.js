@@ -52,6 +52,7 @@ async function connectWallet() {
     // Load all data once connected
     await loadCreatorStatus();
     await loadAllCampaigns();
+    await loadCreatorOptions();
 
     // Listen for account/chain changes
     window.ethereum.on("accountsChanged", () => window.location.reload());
@@ -170,11 +171,93 @@ async function loadCreatorStatus() {
 //  SECTION 4 — VOTING UI
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Cache of {address, ipfsHash, verified} for everyone who has ever applied,
+// built from ApplicationSubmitted events. Avoids re-scanning logs on every
+// dropdown refresh within the same session.
+let creatorOptionsCache = null;
+
+async function loadCreatorOptions(forceRefresh = false) {
+  if (!contract) return;
+  const select = document.getElementById("vote-creator-select");
+  if (!select) return;
+
+  try {
+    if (!creatorOptionsCache || forceRefresh) {
+      select.innerHTML = `<option value="">Loading applicants…</option>`;
+
+      // Pull every application ever submitted from contract event logs.
+      const events = await contract.queryFilter("ApplicationSubmitted", 0, "latest");
+
+      // De-dupe by address, keeping the most recent ipfsHash per creator
+      // (in case someone could re-apply in the future).
+      const byAddress = new Map();
+      for (const ev of events) {
+        const addr = ev.args.creator;
+        byAddress.set(addr, ev.args.ipfsHash);
+      }
+
+      // Fetch live verified/applied status for each applicant in parallel.
+      const addresses = [...byAddress.keys()];
+      const details = await Promise.all(
+        addresses.map(async (addr) => {
+          try {
+            const [, verified, applied] = await contract.getCreatorProof(addr);
+            return { address: addr, verified, applied };
+          } catch {
+            return { address: addr, verified: false, applied: false };
+          }
+        })
+      );
+
+      // Only keep ones that still show as applied (defensive — should all be true)
+      creatorOptionsCache = details.filter(d => d.applied);
+    }
+
+    populateCreatorSelect();
+
+  } catch (err) {
+    console.error("loadCreatorOptions:", err);
+    select.innerHTML = `<option value="">Failed to load — click ↻ to retry</option>`;
+  }
+}
+
+function populateCreatorSelect() {
+  const select = document.getElementById("vote-creator-select");
+  if (!select) return;
+
+  if (!creatorOptionsCache || creatorOptionsCache.length === 0) {
+    select.innerHTML = `<option value="">No creators have applied yet</option>`;
+    return;
+  }
+
+  const options = creatorOptionsCache.map(d => {
+    const short = d.address.slice(0, 6) + "…" + d.address.slice(-4);
+    const tag   = d.verified ? "✔ Verified" : "Pending";
+    return `<option value="${d.address}">${short} — ${tag}</option>`;
+  });
+
+  select.innerHTML =
+    `<option value="">Select a creator…</option>` + options.join("");
+}
+
+function handleCreatorSelect() {
+  const select = document.getElementById("vote-creator-select");
+  const addr   = select.value;
+  if (!addr) return;
+
+  // Keep the manual input in sync and run the same lookup path
+  document.getElementById("vote-creator-address").value = addr;
+  lookupCreator();
+}
+
 async function lookupCreator() {
   requireWallet();
   const addr = document.getElementById("vote-creator-address").value.trim();
   if (!ethers.isAddress(addr)) { showStatus("Invalid address.", "error"); return; }
+  await renderCreatorPanel(addr);
+}
 
+async function renderCreatorPanel(addr) {
   try {
     const [ipfsHash, verified, applied] = await contract.getCreatorProof(addr);
     const [upvotes, downvotes]          = await contract.getVotes(addr);
@@ -222,7 +305,9 @@ async function castVote(creatorAddress, upvote) {
     const tx = await contract.voteOnCreator(creatorAddress, upvote);
     await tx.wait();
     showStatus("✅ Vote recorded!", "success");
-    await lookupCreator();
+    await renderCreatorPanel(creatorAddress);
+    // Refresh dropdown so the verified tag / threshold status stays current
+    await loadCreatorOptions(true);
   } catch (err) {
     showStatus("Vote failed: " + (err.reason || err.message), "error");
   }
@@ -561,6 +646,11 @@ function showTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
   document.getElementById(tabId).classList.add("active");
   event.currentTarget.classList.add("active");
+
+  // Lazily populate the creator dropdown the first time the Vote tab is opened
+  if (tabId === "tab-vote" && contract) {
+    loadCreatorOptions();
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

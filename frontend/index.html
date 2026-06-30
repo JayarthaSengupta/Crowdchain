@@ -183,7 +183,17 @@
         <div class="card-title">Look Up a Creator</div>
 
         <div class="form-group">
-          <label>Creator Wallet Address</label>
+          <label>Applied Creators</label>
+          <div style="display:flex; gap:10px;">
+            <select id="vote-creator-select" style="flex:1;" onchange="handleCreatorSelect()">
+              <option value="">Loading applicants…</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="loadCreatorOptions()" title="Refresh list">↻</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Or Enter an Address Manually</label>
           <div style="display:flex; gap:10px;">
             <input type="text" id="vote-creator-address"
                    placeholder="0x..." style="flex:1;" />
@@ -192,7 +202,7 @@
         </div>
 
         <div id="vote-panel">
-          <p class="text-muted">Enter a creator address above to see their proof and vote.</p>
+          <p class="text-muted">Select a creator above, or enter an address, to see their proof and vote.</p>
         </div>
       </div>
 
