@@ -12,6 +12,7 @@ A decentralized crowdfunding platform built on Ethereum that enables verified cr
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
+- [Context Diagram](#context-diagram)
 - [Setup](#setup-one-time-only)
 - [Running the Project](#running-the-project--3-commands-total)
 - [Deploying to Sepolia](#deploying-to-sepolia-testnet-instead)
@@ -48,29 +49,10 @@ A decentralized crowdfunding platform built on Ethereum that enables verified cr
 - IPFS (Pinata)
 - Node.js
 
-                    +----------------+
-                    |    MetaMask    |
-                    +-------+--------+
-                            |
-                            v
-+--------------------------------------------------+
-|               Frontend (HTML/CSS/JS)             |
-+-----------------------+--------------------------+
-                        |
-                        v
-                  Ethers.js v6
-                        |
-                        v
-+--------------------------------------------------+
-|        Solidity Crowdfunding Smart Contract      |
-+-----------------------+--------------------------+
-                        |
-        +---------------+----------------+
-        |                                |
-        v                                v
- Ethereum Localhost / Sepolia      IPFS (Pinata)
-
- ---
+## Context Diagram
+<p align="center">
+<img src="docs/diagrams/context-diagram.png" width="900">
+</p>
 
 ## Setup (one time only)
  
