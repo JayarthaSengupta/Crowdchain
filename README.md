@@ -255,8 +255,9 @@ Generated via `npx hardhat run scripts/analyze.js --network localhost`. <table>
 </td>
 </tr>
 </table> 
+
 ---
- 
+
 ## Security notes
  
 - Withdraw/refund follow checks-effects-interactions (state updated before ETH transfer) to prevent reentrancy.
