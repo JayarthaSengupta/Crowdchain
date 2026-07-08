@@ -1,5 +1,29 @@
 # CrowdChain — Decentralized Crowdfunding dApp
 
+A decentralized crowdfunding platform built on Ethereum that enables verified creators to launch fundraising campaigns while ensuring transparency through smart contracts and decentralized storage.
+
+## Features
+
+- Secure Ethereum smart contracts (Solidity)
+- Creator verification using community voting
+- IPFS integration for decentralized document storage
+- ETH-based crowdfunding campaigns
+- MetaMask wallet integration
+- Automatic contract deployment with Hardhat
+- Refund mechanism for unsuccessful campaigns
+- Withdrawal only after funding goals are met
+
+## Tech Stack
+
+- Solidity
+- Hardhat
+- Ethers.js
+- JavaScript
+- HTML/CSS
+- MetaMask
+- IPFS (Pinata)
+- Node.js
+
 ## Setup (one time only)
 
 ```bash
