@@ -51,7 +51,7 @@ A decentralized crowdfunding platform built on Ethereum that enables verified cr
 
 ## Context Diagram
 <p align="center">
-<img src="docs/diagrams/context-diagram.png" width="900">
+<img src="docs/context-diagram.png" width="900">
 </p>
 
 ## Setup (one time only)
