@@ -1,6 +1,30 @@
 # CrowdChain — Decentralized Crowdfunding dApp
- 
+
+![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636?logo=solidity)
+![Hardhat](https://img.shields.io/badge/Hardhat-2.x-yellow)
+![Ethers.js](https://img.shields.io/badge/Ethers.js-v6-3C3C3D)
+![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+
 A decentralized crowdfunding platform built on Ethereum that enables verified creators to launch fundraising campaigns while ensuring transparency through smart contracts and decentralized storage.
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Setup](#setup-one-time-only)
+- [Running the Project](#running-the-project--3-commands-total)
+- [Deploying to Sepolia](#deploying-to-sepolia-testnet-instead)
+- [MetaMask Setup](#metamask-setup-for-localhost)
+- [IPFS Setup](#ipfs-setup-pinata)
+- [Gas & Performance Analysis](#gas--performance-analysis)
+- [Project Structure](#project-structure)
+- [Smart Contract Functions](#smart-contract-functions)
+- [Screenshots](#screenshots)
+- [Performance & Analysis Charts](#performance--analysis-charts)
+- [Security Notes](#security-notes)
+- [Future Improvements](#future-improvements)
+- [License](#license)
  
 ## Features
  
@@ -23,6 +47,31 @@ A decentralized crowdfunding platform built on Ethereum that enables verified cr
 - MetaMask
 - IPFS (Pinata)
 - Node.js
+
+                    +----------------+
+                    |    MetaMask    |
+                    +-------+--------+
+                            |
+                            v
++--------------------------------------------------+
+|               Frontend (HTML/CSS/JS)             |
++-----------------------+--------------------------+
+                        |
+                        v
+                  Ethers.js v6
+                        |
+                        v
++--------------------------------------------------+
+|        Solidity Crowdfunding Smart Contract      |
++-----------------------+--------------------------+
+                        |
+        +---------------+----------------+
+        |                                |
+        v                                v
+ Ethereum Localhost / Sepolia      IPFS (Pinata)
+
+ ---
+
 ## Setup (one time only)
  
 ```bash
@@ -148,59 +197,82 @@ crowdchain/
  
 ## Screenshots
  
-Place image files in `docs/screenshots/` with the filenames below (or update the paths to match yours).
- 
-### Home Page
-![Home Page](docs/screenshots/home-page.png)
- 
-### Home Page: How It Works
-![Home Page - How It Works](docs/screenshots/home-how-it-works.png)
- 
-### Get Verified Page — Pending Verification Request
-![Get Verified - Pending](docs/screenshots/get-verified-pending.png)
- 
-### Get Verified Page — Verification Complete
-![Get Verified - Complete](docs/screenshots/get-verified-complete.png)
- 
-### Vote on Creators — Landing Page (For Candidate)
-![Vote on Creators - Candidate](docs/screenshots/vote-landing-candidate.png)
- 
-### Vote on Creators Page — For User
-![Vote on Creators - User](docs/screenshots/vote-page-user.png)
- 
-### Vote on Creators Page — For Voter
-![Vote on Creators - Voter](docs/screenshots/vote-page-voter.png)
- 
-### Create a Campaign Page
-![Create a Campaign](docs/screenshots/create-campaign.png)
+<table>
+<tr>
+<td align="center">
+<b>Home Page</b><br>
+<img src="docs/screenshots/home-page.png" width="450">
+</td>
+
+<td align="center">
+<b>How It Works</b><br>
+<img src="docs/screenshots/home-how-it-works.png" width="450">
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<b>Pending Verification</b><br>
+<img src="docs/screenshots/get-verified-pending.png" width="450">
+</td>
+
+<td align="center">
+<b>Verification Complete</b><br>
+<img src="docs/screenshots/get-verified-complete.png" width="450">
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<b>Candidate View</b><br>
+<img src="docs/screenshots/vote-landing-candidate.png" width="450">
+</td>
+
+<td align="center">
+<b>User View</b><br>
+<img src="docs/screenshots/vote-page-user.png" width="450">
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<b>Voter View</b><br>
+<img src="docs/screenshots/vote-page-voter.png" width="450">
+</td>
+
+<td align="center">
+<b>Create Campaign</b><br>
+<img src="docs/screenshots/create-campaign.png" width="450">
+</td>
+</tr>
+</table>
  
 ---
  
 ## Performance & Analysis Charts
  
-Generated via `npx hardhat run scripts/analyze.js --network localhost`. Place image files in `docs/charts/` with the filenames below (or update the paths to match yours).
- 
-### Dashboard
-![Dashboard](docs/charts/dashboard.png)
- 
-### Gas Usage
-![Gas Usage](docs/charts/gas-usage.png)
- 
-### Gas Distribution
-![Gas Distribution](docs/charts/gas-distribution.png)
- 
-### ETH Cost
-![ETH Cost](docs/charts/eth-cost.png)
- 
-### View Latency
-![View Latency](docs/charts/view-latency.png)
- 
-### Voting Progression
-![Voting Progression](docs/charts/voting-progression.png)
- 
-### Security Scenarios
-![Security Scenarios](docs/charts/security-scenarios.png)
- 
+Generated via `npx hardhat run scripts/analyze.js --network localhost`. <table>
+<tr>
+<td><img src="docs/charts/dashboard.png" width="450"></td>
+<td><img src="docs/charts/gas-usage.png" width="450"></td>
+</tr>
+
+<tr>
+<td><img src="docs/charts/gas-distribution.png" width="450"></td>
+<td><img src="docs/charts/eth-cost.png" width="450"></td>
+</tr>
+
+<tr>
+<td><img src="docs/charts/view-latency.png" width="450"></td>
+<td><img src="docs/charts/voting-progression.png" width="450"></td>
+</tr>
+
+<tr>
+<td colspan="2" align="center">
+<img src="docs/charts/security-scenarios.png" width="600">
+</td>
+</tr>
+</table> 
 ---
  
 ## Security notes
@@ -209,3 +281,27 @@ Generated via `npx hardhat run scripts/analyze.js --network localhost`. Place im
 - No admin/owner role — verification is fully community-governed via voting.
 - Contract has no pause/emergency-stop mechanism; consider adding one before mainnet use.
 - Frontend Pinata keys are client-side and visible to anyone who views source — fine for a local demo, not safe for production as-is.
+
+
+## What I Learned
+
+- Building secure Ethereum smart contracts using Solidity
+- Deploying and testing contracts with Hardhat
+- Integrating MetaMask using Ethers.js
+- Using IPFS for decentralized document storage
+- Measuring gas costs and transaction performance
+- Designing a complete end-to-end Web3 application
+
+## Future Improvements
+
+- ERC-20 token donations
+- Campaign categories and search
+- Milestone-based fund releases
+- DAO-based governance
+- Backend proxy for secure Pinata uploads
+- Mobile-responsive UI enhancements
+- Unit and integration tests
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
